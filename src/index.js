@@ -3,6 +3,7 @@ const express = require("express");
 const morgan = require("morgan");
 const methodOverride = require("method-override");
 const hbs = require("express-handlebars");
+const SortMiddleware = require("./app/middlewares/SortMiddleware");
 
 const route = require("./routes");
 const db = require("./config/db");
@@ -23,16 +24,17 @@ app.use(
 );
 app.use(express.json());
 
-app.use(methodOverride('_method'));
+app.use(methodOverride("_method"));
+
+// Custom middlewares
+app.use(SortMiddleware);
 
 // Templates engine
 app.engine(
   "hbs",
   hbs.engine({
     extname: ".hbs",
-    helpers: {
-      sum: (a, b) => a + b,
-    },
+    helpers: require('./helpers/handlebars'),
   })
 );
 app.set("view engine", "hbs");
